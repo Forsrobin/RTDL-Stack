@@ -1,10 +1,12 @@
 import type { ActionFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useActionData, useSearchParams } from '@remix-run/react'
-import { createUserSession, login } from '../utils/session.server'
+import { db } from '../utils/db.server'
+import { createUserSession, register } from '../utils/session.server'
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData()
+
   const username = form.get('username')
   const password = form.get('password')
 
@@ -25,12 +27,20 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (Object.values(fieldErrors).some(Boolean)) return badRequest({ fieldErrors, fields })
 
-  const user = await login({ username, password })
-  console.log({ user })
+  const userExists = await db.user.findFirst({
+    where: { username }
+  })
+  if (userExists) {
+    return badRequest({
+      fields,
+      formError: `User with username ${username} already exists`
+    })
+  }
+  const user = await register({ username, password })
   if (!user) {
     return badRequest({
       fields,
-      formError: `Username/Password combination is incorrect`
+      formError: `Something went wrong trying to create a new user.`
     })
   }
   return createUserSession(user.id, redirectTo)
@@ -58,14 +68,14 @@ function validateUrl(url: string) {
 const badRequest = (data: any) => json(data, { status: 400 })
 
 const inputClassName = `w-full rounded border border-gray-500 px-2 py-1 text-lg text-purple-900 outline-purple-300 `
-export default function LoginRoute() {
+export default function RegisterRoute() {
   const actionData = useActionData()
   const [searchParams] = useSearchParams()
   return (
     <div className='flex justify-center items-center content-center text-white'>
       <div className='lg:m-10 my-10 md:w-2/3 lg:w-1/2 bg-gradient-to-br from-purple-500 via-purple-400 to-purple-300  font-bold px-5 py-6 rounded-md'>
         <form method='post'>
-          <h1 className='text-center text-2xl text-white'>Login</h1>
+          <h1 className='text-center text-2xl text-white'>Register</h1>
           <input type='hidden' name='redirectTo' value={searchParams.get('redirectTo') ?? undefined} />
           <label className='text-lg leading-7 text-white'>
             Username:
@@ -110,7 +120,7 @@ export default function LoginRoute() {
             ) : null}
           </div>
           <button className='my-4 py-2 px-7 text-purple-500 font-bold border-2 hover:scale-105 border-purple-500 rounded-lg bg-white' type='submit'>
-            Login
+            Register
           </button>
         </form>
       </div>
