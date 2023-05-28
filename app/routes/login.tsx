@@ -62,10 +62,10 @@ export default function LoginRoute() {
   const actionData = useActionData()
   const [searchParams] = useSearchParams()
   return (
-    <div className='flex justify-center items-center content-center text-white'>
-      <div className='lg:m-10 my-10 md:w-2/3 lg:w-1/2 bg-gradient-to-br from-purple-500 via-purple-400 to-purple-300  font-bold px-5 py-6 rounded-md'>
+    <div className='container'>
+      <div className='container'>
         <form method='post'>
-          <h1 className='text-center text-2xl text-white'>Login</h1>
+          <h1 className=''>Login</h1>
           <input type='hidden' name='redirectTo' value={searchParams.get('redirectTo') ?? undefined} />
           <label className='text-lg leading-7 text-white'>
             Username:
@@ -85,7 +85,7 @@ export default function LoginRoute() {
               </p>
             ) : null}
           </label>
-          <label className='text-lg leading-7 text-white'>
+          <label>
             Password
             <input
               name='password'

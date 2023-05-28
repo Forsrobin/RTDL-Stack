@@ -1,9 +1,13 @@
 import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
 
+import { useState } from 'react'
+import { Navbar } from './components/Navbar'
+import { Sidebar } from './components/Sidebar'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
+import { userPrefs } from './cookies'
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }]
@@ -15,9 +19,11 @@ export const meta: V2_MetaFunction = () => {
 
 export const loader = async ({ request }: ActionArgs) => {
   const user = await getUser(request)
-
+  const cookieHeader = request.headers.get('Cookie')
+  const cookie = (await userPrefs.parse(cookieHeader)) || {}
   return json({
-    user
+    user,
+    theme: cookie.theme
   })
 }
 
@@ -33,8 +39,11 @@ export default function App() {
 }
 
 function Document({ children }: { children: React.ReactNode }) {
+
+  const { theme } = useLoaderData<typeof loader>()
+
   return (
-    <html lang='en'>
+    <html lang='en' data-theme={theme}>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width,initial-scale=1' />
@@ -50,46 +59,18 @@ function Document({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
-  const { user } = useLoaderData<typeof loader>()
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [displaySidebar, setDisplaySidebar] = useState(true)
 
   return (
-    <>
-      <nav className='navbar bg-base-100'>
-        <div className='flex-1'>
-          <Link className='btn btn-ghost normal-case text-2xl' to={'/'}>
-            Test
-          </Link>
+    <div className='w-full h-screen flex flex-col'>
+      <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
+      <div className='flex flex-row grow'>
+        <div>
+          <Sidebar displaySidebar={displaySidebar} />
         </div>
-        <div className='flex-none'>
-          <ul className='menu menu-horizontal px-1'>
-            {user ? (
-              <>
-                <li>
-                  <Link to={'new-quote'}>Quotes</Link>
-                </li>
-                <li>
-                  <form action='/logout' method='post'>
-                    <button type='submit' className='button'>
-                      Logout
-                    </button>
-                  </form>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link to={'login'}>Login</Link>
-                </li>
-                <li>
-                  <Link to={'register'}>Register</Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-      </nav>
-      <div>{children}</div>
-    </>
+        <div className='grow'>{children}</div>
+      </div>
+    </div>
   )
 }
