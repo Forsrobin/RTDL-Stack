@@ -66,7 +66,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
       <div className='flex flex-row grow'>
         {user && <Sidebar displaySidebar={displaySidebar} />}
-        <div></div>
         <div className='grow flex bg-base-200'>{children}</div>
       </div>
     </div>
