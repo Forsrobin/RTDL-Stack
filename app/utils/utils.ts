@@ -13,13 +13,10 @@ export async function validationAction<ActionInput>({ request, schema }: { reque
     return { formData, error: null }
   } catch (e) {
     const errors = e as ZodError<ActionInput>
-    console.log(errors);
-    
+
     return {
       formData: body,
       errors: errors.issues.reduce((acc: ActionError<ActionInput>, curr) => {
-        console.log(curr);
-        
         const key = curr.path[0] as keyof ActionInput
         acc[key] = curr.message
         return acc

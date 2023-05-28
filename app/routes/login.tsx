@@ -5,10 +5,11 @@ import { login } from '~/utils/auth.server'
 import { createUserSession, getUser } from '../utils/session.server'
 import * as Z from 'zod'
 import { validationAction } from '~/utils/utils'
+import Input from '~/components/Input'
 
 const loginScema = Z.object({
-  username: Z.string({ required_error: 'Username is required' }),
-  password: Z.string({ required_error: 'Password is required'})
+  username: Z.string({ required_error: 'Username is required' }).nonempty('Username cannot be empty'),
+  password: Z.string({ required_error: 'Password is required' }).nonempty('Password cannot be empty')
 })
 type ActionInput = Z.TypeOf<typeof loginScema>
 
@@ -62,37 +63,28 @@ export default function LoginRoute() {
         <div className='card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100'>
           <div className='card-body'>
             <Form method='post' action='/login'>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Username</span>
-                </label>
-                <input
-                  type='text'
-                  className='input input-bordered'
-                  name='username'
-                  placeholder='Robin'
-                  minLength={3}
-                  defaultValue={actionData?.fields?.username}
-                />
-              </div>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Password</span>
-                </label>
-                <input
-                  name='password'
-                  className={'input input-bordered ' + (actionData?.fieldErrors?.password ? 'input-error' : '')}
-                  placeholder='***************'
-                  required
-                  defaultValue={actionData?.fields?.password}
-                  type='password'
-                />
-                <label className='label'>
-                  <a href='#' className='label-text-alt link link-hover'>
-                    Forgot password?
-                  </a>
-                </label>
-              </div>
+              <Input
+                type='test'
+                formLabel='Username'
+                formName='username'
+                placeholder='Robin'
+                fieldError={actionData?.fieldErrors?.username}
+                field={actionData?.fields?.username}
+              />
+              <Input
+                type='password'
+                formLabel='Password'
+                formName='password'
+                showPasswordOption={true}
+                placeholder='***************'
+                fieldError={actionData?.fieldErrors?.password}
+                field={actionData?.fields?.password}
+              />
+              <label className='label'>
+                <a href='#' className='label-text-alt link link-hover'>
+                  Forgot password?
+                </a>
+              </label>
               <div id='form-error-message'>
                 {actionData?.formError ? (
                   <div className='alert alert-error shadow-lg px-2 py-1'>

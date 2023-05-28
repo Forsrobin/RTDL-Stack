@@ -1,11 +1,12 @@
 import type { ActionFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
+import * as Z from 'zod'
+import Input from '~/components/Input'
 import { register } from '~/utils/auth.server'
+import { validationAction } from '~/utils/utils'
 import { db } from '../utils/db.server'
 import { createUserSession } from '../utils/session.server'
-import * as Z from 'zod'
-import { validationAction } from '~/utils/utils'
 
 const registerScema = Z.object({
   username: Z.string()
@@ -70,63 +71,31 @@ export default function RegisterRoute() {
         <div className='card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100'>
           <div className='card-body'>
             <Form method='post' action='/register'>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Username</span>
-                </label>
-                <input
-                  type='text'
-                  className={'input input-bordered ' + (actionData?.fieldErrors?.username ? 'input-error' : '')}
-                  name='username'
-                  placeholder='Robin'
-                  defaultValue={actionData?.fields?.username}
-                />
-                <label className='label'>
-                  {actionData?.fieldErrors?.username ? (
-                    <span className='label-text' role='alert' id='username-error'>
-                      {actionData.fieldErrors.username}
-                    </span>
-                  ) : null}
-                </label>
-              </div>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Password</span>
-                </label>
-                <input
-                  name='password'
-                  className={'input input-bordered ' + (actionData?.fieldErrors?.password ? 'input-error' : '')}
-                  placeholder='***************'
-                  defaultValue={actionData?.fields?.password}
-                  type='password'
-                />
-                <label className='label'>
-                  {actionData?.fieldErrors?.password ? (
-                    <span className='label-text' role='alert' id='password-error'>
-                      {actionData.fieldErrors.password}
-                    </span>
-                  ) : null}
-                </label>
-              </div>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Confirm Password</span>
-                </label>
-                <input
-                  name='confirmPassword'
-                  className={'input input-bordered ' + (actionData?.fieldErrors?.confirmPassword ? 'input-error' : '')}
-                  placeholder='***************'
-                  defaultValue={actionData?.fields?.confirmPassword}
-                  type='password'
-                />
-                <label className='label'>
-                  {actionData?.fieldErrors?.confirmPassword ? (
-                    <span className='label-text' role='alert' id='password-error'>
-                      {actionData.fieldErrors.confirmPassword}
-                    </span>
-                  ) : null}
-                </label>
-              </div>
+              <Input
+                type='text'
+                formLabel='Username'
+                formName='username'
+                placeholder='Robin'
+                fieldError={actionData?.fieldErrors?.username}
+                field={actionData?.fields?.username}
+              />
+              <Input
+                type='password'
+                formLabel='Password'
+                formName='password'
+                showPasswordOption={true}
+                placeholder='***************'
+                fieldError={actionData?.fieldErrors?.password}
+                field={actionData?.fields?.password}
+              />
+              <Input
+                type='password'
+                formLabel='Confirm Password'
+                formName='confirmPassword'
+                placeholder='***************'
+                fieldError={actionData?.fieldErrors?.confirmPassword}
+                field={actionData?.fields?.confirmPassword}
+              />
               <div id='form-error-message'>
                 {actionData?.formError ? (
                   <div className='alert alert-error shadow-lg px-2 py-1'>
