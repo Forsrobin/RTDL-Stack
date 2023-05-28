@@ -1,4 +1,4 @@
-import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
+import { ActionArgs, V2_MetaFunction, redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
 
@@ -11,13 +11,19 @@ export const meta: V2_MetaFunction = () => {
 
 export const loader = async ({ request }: ActionArgs) => {
   const user = await getUser(request)
+
+  if (!user) {
+    return redirect('/login')
+  }
+
   return json({
     quotes: await db.quote.findMany(),
     user
   })
 }
 
-export default function Index() {
+const Index = () => {
+  // Load the quotes from the loader
   const { quotes } = useLoaderData<typeof loader>()
 
   return (
@@ -39,3 +45,5 @@ export default function Index() {
     </div>
   )
 }
+
+export default Index

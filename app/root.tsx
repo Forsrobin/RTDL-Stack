@@ -9,7 +9,7 @@ import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
 import { userPrefs } from './cookies'
 
-export function links() {
+export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]
 }
 
@@ -38,8 +38,7 @@ export default function App() {
   )
 }
 
-function Document({ children }: { children: React.ReactNode }) {
-
+const Document = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useLoaderData<typeof loader>()
 
   return (
@@ -61,15 +60,14 @@ function Document({ children }: { children: React.ReactNode }) {
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [displaySidebar, setDisplaySidebar] = useState(true)
-
+  const { user } = useLoaderData<typeof loader>()
   return (
     <div className='w-full h-screen flex flex-col'>
       <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
       <div className='flex flex-row grow'>
-        <div>
-          <Sidebar displaySidebar={displaySidebar} />
-        </div>
-        <div className='grow'>{children}</div>
+        {user && <Sidebar displaySidebar={displaySidebar} />}
+        <div></div>
+        <div className='grow flex bg-base-200'>{children}</div>
       </div>
     </div>
   )

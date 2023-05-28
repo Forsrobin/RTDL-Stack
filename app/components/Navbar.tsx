@@ -1,9 +1,9 @@
-import type { ActionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react';
-import { MdColorLens } from 'react-icons/md';
-import { userPrefs } from '~/cookies';
-import { getUser } from '~/utils/session.server';
+import type { ActionArgs } from '@remix-run/node'
+import { json } from '@remix-run/node'
+import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react'
+import { MdColorLens } from 'react-icons/md'
+import { userPrefs } from '~/cookies'
+import { getUser } from '~/utils/session.server'
 
 interface NavbarProps {
   displaySidebar: boolean
@@ -31,20 +31,21 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
   }
 
   return (
-    <nav className='navbar bg-primary text-base-300 shadow-sm'>
-      <div className='flex-none'>
-        <button className='btn btn-square btn-ghost' onClick={() => setDisplaySidebar(!displaySidebar)}>
-          <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' className='inline-block w-5 h-5 stroke-current'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16'></path>
-          </svg>
-        </button>
-      </div>
+    <nav className='navbar bg-primary text-white shadow-md z-10'>
+      {user && (
+        <div className='flex-none'>
+          <button className='btn btn-square btn-ghost' onClick={() => setDisplaySidebar(!displaySidebar)}>
+            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' className='inline-block w-5 h-5 stroke-current'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16'></path>
+            </svg>
+          </button>
+        </div>
+      )}
       <div className='flex-1'>
         <Link className='normal-case text-xl rounded-none ml-4' to={'/'}>
           ShopSpy
         </Link>
       </div>
-      <p>{theme}</p>
       <div className='flex-none'>
         <ul className='menu menu-horizontal px-5 items-center gap-[5px]'>
           {user ? (
@@ -74,10 +75,10 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
                     <label tabIndex={0} className='btn btn-ghost rounded-btn'>
                       <MdColorLens className='text-3xl' />
                     </label>
-                    <ul tabIndex={0} className='menu dropdown-content p-1 shadow bg-base-100 w-auto mt-4 text-neutral'>
+                    <ul tabIndex={0} className='menu dropdown-content p-1 shadow bg-base-100 w-auto mt-4 text-base-content'>
                       <Form method='post' action='theme' onChange={handleChange}>
                         <li>
-                          <label className='cursor-pointer label'>
+                          <label className='cursor-pointer label label-text'>
                             <input
                               type='radio'
                               name='theme'
@@ -90,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
                           </label>
                         </li>
                         <li>
-                          <label className='cursor-pointer label'>
+                          <label className='cursor-pointer label label-text'>
                             <input
                               type='radio'
                               name='theme'
@@ -103,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
                           </label>
                         </li>
                         <li>
-                          <label className='cursor-pointer label'>
+                          <label className='cursor-pointer label label-text'>
                             <input
                               type='radio'
                               name='theme'

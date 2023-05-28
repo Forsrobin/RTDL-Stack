@@ -1,119 +1,181 @@
-import type { ActionFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { useActionData, useSearchParams } from '@remix-run/react'
-import { createUserSession, login } from '../utils/session.server'
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, Link, useActionData } from '@remix-run/react'
+import { login } from '~/utils/auth.server'
+import { createUserSession, getUser } from '../utils/session.server'
+import * as Z from 'zod'
+import { validationAction } from '~/utils/utils'
+
+const loginScema = Z.object({
+  username: Z.string({ required_error: 'Username is required' }),
+  password: Z.string({ required_error: 'Password is required'})
+})
+type ActionInput = Z.TypeOf<typeof loginScema>
+
+export const loader: LoaderFunction = async ({ request }) => {
+  // If the user is already logged in, redirect them to the home page
+  const user = await getUser(request)
+  if (user) {
+    return redirect('/')
+  }
+  return json({})
+}
 
 export const action: ActionFunction = async ({ request }) => {
-  const form = await request.formData()
-  const username = form.get('username')
-  const password = form.get('password')
+  const { formData, errors } = await validationAction<ActionInput>({ request, schema: loginScema })
 
-  const redirectTo = validateUrl(String(form.get('redirectTo')) || '/')
-
-  if (typeof username !== 'string' || typeof password !== 'string' || typeof redirectTo !== 'string') {
+  if (errors) {
     return badRequest({
-      formError: `Form not submitted correctly.`
+      fieldErrors: errors,
+      fields: formData
     })
   }
 
-  const fields = { username, password }
-
-  const fieldErrors = {
-    username: validateUsername(username),
-    password: validatePassword(password)
-  }
-
-  if (Object.values(fieldErrors).some(Boolean)) return badRequest({ fieldErrors, fields })
-
+  const { username, password } = formData
+  const fields = formData
   const user = await login({ username, password })
-  console.log({ user })
+
   if (!user) {
     return badRequest({
-      fields,
-      formError: `Username/Password combination is incorrect`
+      formError: `Username/Password combination is incorrect`,
+      fields
     })
   }
-  return createUserSession(user.id, redirectTo)
-}
 
-function validateUsername(username: string) {
-  if (typeof username !== 'string' || username.length < 3) {
-    return `Usernames must be at least 3 characters long`
-  }
-}
-function validatePassword(password: string) {
-  if (typeof password !== 'string' || password.length < 6) {
-    return `Passwords must be at least 6 characters long`
-  }
-}
-function validateUrl(url: string) {
-  console.log(url)
-  let urls = ['/']
-  if (urls.includes(url)) {
-    return url
-  }
-  return '/'
+  return createUserSession(user.id, '/')
 }
 
 const badRequest = (data: any) => json(data, { status: 400 })
 
-const inputClassName = `w-full rounded border border-gray-500 px-2 py-1 text-lg text-purple-900 outline-purple-300 `
 export default function LoginRoute() {
-  const actionData = useActionData()
-  const [searchParams] = useSearchParams()
+  const actionData = useActionData<typeof action>()
   return (
-    <div className='container'>
-      <div className='container'>
-        <form method='post'>
-          <h1 className=''>Login</h1>
-          <input type='hidden' name='redirectTo' value={searchParams.get('redirectTo') ?? undefined} />
-          <label className='text-lg leading-7 text-white'>
-            Username:
-            <input
-              type='text'
-              className={inputClassName}
-              name='username'
-              required
-              minLength={3}
-              defaultValue={actionData?.fields?.username}
-              aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-              aria-errormessage={actionData?.fieldErrors?.username ? 'username-error' : undefined}
-            />
-            {actionData?.fieldErrors?.username ? (
-              <p className='text-red-500' role='alert' id='username-error'>
-                {actionData.fieldErrors.username}
-              </p>
-            ) : null}
-          </label>
-          <label>
-            Password
-            <input
-              name='password'
-              className={inputClassName}
-              required
-              defaultValue={actionData?.fields?.password}
-              type='password'
-              aria-invalid={Boolean(actionData?.fieldErrors?.password) || undefined}
-              aria-errormessage={actionData?.fieldErrors?.password ? 'password-error' : undefined}
-            />
-            {actionData?.fieldErrors?.password ? (
-              <p className='text-red-500' role='alert' id='password-error'>
-                {actionData.fieldErrors.password}
-              </p>
-            ) : null}
-          </label>
-          <div id='form-error-message'>
-            {actionData?.formError ? (
-              <p className='text-red-500' role='alert'>
-                {actionData.formError}
-              </p>
-            ) : null}
+    <div className='hero max-w-full'>
+      <div className='hero-content gap-20 flex-col lg:flex-row-reverse'>
+        <div className='text-center w-1/4 lg:text-left'>
+          <h1 className='text-5xl font-bold'>Login now!</h1>
+          <p className='py-6'>
+            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a
+            id nisi.
+          </p>
+        </div>
+        <div className='card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100'>
+          <div className='card-body'>
+            <Form method='post' action='/login'>
+              <div className='form-control'>
+                <label className='label'>
+                  <span className='label-text'>Username</span>
+                </label>
+                <input
+                  type='text'
+                  className='input input-bordered'
+                  name='username'
+                  placeholder='Robin'
+                  minLength={3}
+                  defaultValue={actionData?.fields?.username}
+                />
+              </div>
+              <div className='form-control'>
+                <label className='label'>
+                  <span className='label-text'>Password</span>
+                </label>
+                <input
+                  name='password'
+                  className={'input input-bordered ' + (actionData?.fieldErrors?.password ? 'input-error' : '')}
+                  placeholder='***************'
+                  required
+                  defaultValue={actionData?.fields?.password}
+                  type='password'
+                />
+                <label className='label'>
+                  <a href='#' className='label-text-alt link link-hover'>
+                    Forgot password?
+                  </a>
+                </label>
+              </div>
+              <div id='form-error-message'>
+                {actionData?.formError ? (
+                  <div className='alert alert-error shadow-lg px-2 py-1'>
+                    <div className='indicator text-white'>
+                      <svg xmlns='http://www.w3.org/2000/svg' className='stroke-current flex-shrink-0 h-6 w-6' fill='none' viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth='2'
+                          d='M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
+                        />
+                      </svg>
+                      <label className='label'>
+                        <span className='label-text text-white'>{actionData.formError}</span>
+                      </label>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div className='flex flex-col w-full border-opacity-50'>
+                <div className='form-control mt-6'>
+                  <button className='btn btn-primary' type='submit'>
+                    Login
+                  </button>
+                </div>
+                <div className='divider'>OR</div>
+                <div className='form-control'>
+                  <Link to={'/register'} className='btn  btn-outline '>
+                    Register
+                  </Link>
+                </div>
+              </div>
+            </Form>
           </div>
-          <button className='my-4 py-2 px-7 text-purple-500 font-bold border-2 hover:scale-105 border-purple-500 rounded-lg bg-white' type='submit'>
-            Login
-          </button>
-        </form>
+        </div>
       </div>
     </div>
+
+    // <div className='container bg-accent m-0 p-0'>
+    //   <Form method='post' className='form-control w-full max-w-xs bg-primary'>
+    //     <h1 className=''>Login</h1>
+    //     <label className='label'>
+    //       <span className='label-text'>Username</span>
+    //     </label>
+    //     <input
+    //       type='text'
+    //       className='input input-bordered w-full max-w-xs'
+    //       name='username'
+    //       placeholder='Username'
+    //       required
+    //       minLength={3}
+    //       defaultValue={actionData?.fields?.username}
+    //       aria-invalid={Boolean(actionData?.fieldErrors?.username)}
+    //       aria-errormessage={actionData?.fieldErrors?.username ? 'username-error' : undefined}
+    //     />
+    //     {/* <label className=''>
+    //         Username:
+    //         {actionData?.fieldErrors?.username ? (
+    //           <p role='alert' id='username-error'>
+    //             {actionData.fieldErrors.username}
+    //           </p>
+    //         ) : null}
+    //       </label> */}
+    //     <label>
+    //       Password
+    //       <input
+    //         name='password'
+    //         className={''}
+    //         required
+    //         defaultValue={actionData?.fields?.password}
+    //         type='password'
+    //         aria-invalid={Boolean(actionData?.fieldErrors?.password) || undefined}
+    //         aria-errormessage={actionData?.fieldErrors?.password ? 'password-error' : undefined}
+    //       />
+    //       {actionData?.fieldErrors?.password ? (
+    //         <p role='alert' id='password-error'>
+    //           {actionData.fieldErrors.password}
+    //         </p>
+    //       ) : null}
+    //     </label>
+    //     <div id='form-error-message'>{actionData?.formError ? <p role='alert'>{actionData.formError}</p> : null}</div>
+    //     <button type='submit'>Login</button>
+    //   </Form>
+    // </div>
   )
 }
