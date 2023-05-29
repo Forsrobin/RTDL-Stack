@@ -1,7 +1,6 @@
 import type { ActionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react'
-import { MdColorLens } from 'react-icons/md'
+import { Link, useLoaderData } from '@remix-run/react'
 import { userPrefs } from '~/cookies'
 import { getUser } from '~/utils/session.server'
 import ThemeSelector from './ThemeSelector'
