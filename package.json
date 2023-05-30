@@ -12,7 +12,9 @@
     "dev:css": "tailwindcss -w -o ./app/styles/app.css",
     "dev:remix": "remix watch",
     "start": "cross-env NODE_ENV=production node ./server.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "seed": "prisma db seed",
+    "push": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^4.14.1",

@@ -5,9 +5,9 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderD
 import { useState } from 'react'
 import { Navbar } from './components/Navbar'
 import { Sidebar } from './components/Sidebar'
+import { userPrefs } from './cookies'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
-import { userPrefs } from './cookies'
 
 export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]
@@ -30,7 +30,6 @@ export const loader = async ({ request }: ActionArgs) => {
 export default function App() {
   return (
     <Document>
-      <ScrollRestoration />
       <Layout>
         <Outlet />
       </Layout>
@@ -52,6 +51,7 @@ const Document = ({ children }: { children: React.ReactNode }) => {
       <body>
         {children}
         <Scripts />
+        <ScrollRestoration />
         {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>
     </html>
@@ -65,7 +65,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className='w-full h-screen flex flex-col'>
       <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
       <div className='flex flex-row grow'>
-        {user && <Sidebar displaySidebar={displaySidebar} />}
+        <div className='flex'>{user && <Sidebar displaySidebar={displaySidebar} />}</div>
         <div className='grow flex bg-base-200'>{children}</div>
       </div>
     </div>

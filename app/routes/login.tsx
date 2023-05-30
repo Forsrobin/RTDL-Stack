@@ -122,52 +122,5 @@ export default function LoginRoute() {
         </div>
       </div>
     </div>
-
-    // <div className='container bg-accent m-0 p-0'>
-    //   <Form method='post' className='form-control w-full max-w-xs bg-primary'>
-    //     <h1 className=''>Login</h1>
-    //     <label className='label'>
-    //       <span className='label-text'>Username</span>
-    //     </label>
-    //     <input
-    //       type='text'
-    //       className='input input-bordered w-full max-w-xs'
-    //       name='username'
-    //       placeholder='Username'
-    //       required
-    //       minLength={3}
-    //       defaultValue={actionData?.fields?.username}
-    //       aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-    //       aria-errormessage={actionData?.fieldErrors?.username ? 'username-error' : undefined}
-    //     />
-    //     {/* <label className=''>
-    //         Username:
-    //         {actionData?.fieldErrors?.username ? (
-    //           <p role='alert' id='username-error'>
-    //             {actionData.fieldErrors.username}
-    //           </p>
-    //         ) : null}
-    //       </label> */}
-    //     <label>
-    //       Password
-    //       <input
-    //         name='password'
-    //         className={''}
-    //         required
-    //         defaultValue={actionData?.fields?.password}
-    //         type='password'
-    //         aria-invalid={Boolean(actionData?.fieldErrors?.password) || undefined}
-    //         aria-errormessage={actionData?.fieldErrors?.password ? 'password-error' : undefined}
-    //       />
-    //       {actionData?.fieldErrors?.password ? (
-    //         <p role='alert' id='password-error'>
-    //           {actionData.fieldErrors.password}
-    //         </p>
-    //       ) : null}
-    //     </label>
-    //     <div id='form-error-message'>{actionData?.formError ? <p role='alert'>{actionData.formError}</p> : null}</div>
-    //     <button type='submit'>Login</button>
-    //   </Form>
-    // </div>
   )
 }

@@ -1,4 +1,5 @@
-import { ActionArgs, V2_MetaFunction, redirect } from '@remix-run/node'
+import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
 
@@ -28,7 +29,6 @@ const Index = () => {
 
   return (
     <div>
-      <Outlet />
       <div className='grid gap-10 grid-cols-2 p-10'>
         {quotes.map((q, i) => {
           const { id, quote, by } = q

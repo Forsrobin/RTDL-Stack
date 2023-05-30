@@ -1,7 +1,7 @@
 import type { ActionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { db } from '../../utils/db.server'
-import { getUser, requireUserId } from '../../utils/session.server'
+import { db } from '../utils/db.server'
+import { getUser, requireUserId } from '../utils/session.server'
 
 export const action = async ({ request }: ActionArgs) => {
   // GEt the user ID
