@@ -24,7 +24,7 @@ export const loader = async ({ request }: ActionArgs) => {
 const NoProjects = () => {
   return (
     <div className='flex grow p-10 items-center justify-center'>
-      <div className='w-96 h-96 text-center'>
+      <div className='mw-96 h-96 text-center'>
         <CollaboratSVG />
         <h2 className='text text-base-content text-xl my-10'>No projects available</h2>
         <button className='btn btn-primary'>

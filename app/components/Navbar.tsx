@@ -40,7 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
           ShopSpy
         </Link>
       </div>
-      <div className='flex-none gap-5 mr-10'>
+      <div className='flex-none gap-5 mr-5'>
         <ul className='menu menu-horizontal px-1 gap-1'>
           {!user ? (
             <>
@@ -56,9 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
         <ThemeSelector currentTheme={theme} />
         {user && (
           <>
-            <div className='form-control text-base-content'>
-              <input type='text' placeholder='Search' className='input input-bordered' />
-            </div>
+            <input type='text' placeholder='Search' className='input input-bordered hidden md:flex' />
             <UserIconNav />
           </>
         )}

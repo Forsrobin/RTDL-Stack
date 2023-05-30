@@ -1,7 +1,6 @@
 import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { Outlet, useLoaderData } from '@remix-run/react'
+import { json, redirect } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 
 import { getUser } from '~/utils/session.server'
 import { db } from '../utils/db.server'
@@ -26,10 +25,9 @@ export const loader = async ({ request }: ActionArgs) => {
 const Index = () => {
   // Load the quotes from the loader
   const { quotes } = useLoaderData<typeof loader>()
-
   return (
     <div>
-      <div className='grid gap-10 grid-cols-2 p-10'>
+      <div className='grid gap-10 grid-cols-1 md:grid-cols-2 p-10'>
         {quotes.map((q, i) => {
           const { id, quote, by } = q
           return (
