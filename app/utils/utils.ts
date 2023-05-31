@@ -1,3 +1,4 @@
+import { json } from '@remix-run/node'
 import type { ZodError, ZodSchema } from 'zod'
 
 type ActionError<T> = Partial<Record<keyof T, string>>
@@ -15,7 +16,7 @@ export async function validationAction<ActionInput>({ request, schema }: { reque
     const errors = e as ZodError<ActionInput>
 
     return {
-      formData: body,
+      formData: body as ActionInput,
       errors: errors.issues.reduce((acc: ActionError<ActionInput>, curr) => {
         const key = curr.path[0] as keyof ActionInput
         acc[key] = curr.message
@@ -23,4 +24,16 @@ export async function validationAction<ActionInput>({ request, schema }: { reque
       }, {})
     }
   }
+}
+
+interface BadRequest<TData> {
+  fields: Partial<Record<keyof TData, string>>
+  fieldErrors?: Partial<Record<keyof TData, string>> | undefined
+  formError?: string | undefined
+}
+
+export async function badRequest<TData>(data: BadRequest<TData>) {
+  return json(data, {
+    status: 400
+  })
 }

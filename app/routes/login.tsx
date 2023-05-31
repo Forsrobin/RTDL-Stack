@@ -1,11 +1,11 @@
-import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import Input from '@app/components/Input'
+import { login } from '@app/utils/auth.server'
+import { createUserSession, getUser } from '@app/utils/session.server'
+import { badRequest, validationAction } from '@app/utils/utils'
+import type { ActionArgs, ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
-import { login } from '~/utils/auth.server'
-import { createUserSession, getUser } from '../utils/session.server'
 import * as Z from 'zod'
-import { validationAction } from '~/utils/utils'
-import Input from '~/components/Input'
 
 const loginScema = Z.object({
   username: Z.string({ required_error: 'Username is required' }).nonempty('Username cannot be empty'),
@@ -22,11 +22,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json({})
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionArgs) => {
   const { formData, errors } = await validationAction<ActionInput>({ request, schema: loginScema })
 
   if (errors) {
-    return badRequest({
+    return await badRequest<ActionInput>({
       fieldErrors: errors,
       fields: formData
     })
@@ -37,19 +37,18 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await login({ username, password })
 
   if (!user) {
-    return badRequest({
+    return await badRequest({
       formError: `Username/Password combination is incorrect`,
-      fields
+      fields: fields
     })
   }
 
   return createUserSession(user.id, '/')
 }
 
-const badRequest = (data: any) => json(data, { status: 400 })
-
 export default function LoginRoute() {
   const actionData = useActionData<typeof action>()
+
   return (
     <div className='hero max-w-full'>
       <div className='hero-content gap-20 flex-col lg:flex-row-reverse'>

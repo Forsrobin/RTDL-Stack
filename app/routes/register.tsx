@@ -1,11 +1,10 @@
+import Input from '@app/components/Input'
+import { register } from '@app/utils/auth.server'
+import { db } from '@app/utils/db.server'
+import { badRequest, validationAction } from '@app/utils/utils'
 import type { ActionFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
 import * as Z from 'zod'
-import Input from '~/components/Input'
-import { register } from '~/utils/auth.server'
-import { validationAction } from '~/utils/utils'
-import { db } from '../utils/db.server'
 import { createUserSession } from '../utils/session.server'
 
 const registerScema = Z.object({
@@ -60,8 +59,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   return createUserSession(user.id, '/')
 }
-
-const badRequest = (data: any) => json(data, { status: 400 })
 
 export default function RegisterRoute() {
   const actionData = useActionData<typeof action>()

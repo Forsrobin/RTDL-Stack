@@ -3,11 +3,11 @@ import { json } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
 
 import { useState } from 'react'
-import { Navbar } from './components/Navbar'
-import { Sidebar } from './components/Sidebar'
-import { userPrefs } from './cookies'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
+import { userPrefs } from './cookies'
+import { Sidebar } from './components/Sidebar'
+import { Navbar } from '@app/components/Navbar'
 
 export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]

@@ -1,9 +1,8 @@
+import { db } from '@app/utils/db.server'
+import { getUser } from '@app/utils/session.server'
 import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-
-import { getUser } from '~/utils/session.server'
-import { db } from '../utils/db.server'
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: 'New Remix App' }, { name: 'description', content: 'Welcome to Remix!' }]

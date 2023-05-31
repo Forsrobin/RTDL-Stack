@@ -1,8 +1,8 @@
+import { userPrefs } from '@app/cookies'
+import { getUser } from '@app/utils/session.server'
 import type { ActionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
-import { userPrefs } from '~/cookies'
-import { getUser } from '~/utils/session.server'
 import ThemeSelector from './ThemeSelector'
 import UserIconNav from './UserIconNav'
 

@@ -1,8 +1,9 @@
-import { ActionArgs, redirect } from '@remix-run/node'
+import { getUser } from '@app/utils/session.server'
+import type { ActionArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import type { FC } from 'react'
-import { getUser } from '~/utils/session.server'
 
 interface UserIconNavProps {}
 

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
-import { db } from './db.server'
 import { redirect } from '@remix-run/node'
-import { getUserSession, storage } from './session.server'
+import { db } from '@app/utils/db.server'
+import { getUserSession, storage } from '@app/utils/session.server'
 
 export type LoginForm = {
   username: string
