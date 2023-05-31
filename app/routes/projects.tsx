@@ -35,6 +35,13 @@ const NoProjects = () => {
   )
 }
 
+const ifDateIsClose = (date: Date) => {
+  const now = new Date()
+  const diff = Math.abs(date.getTime() - now.getTime())
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24))
+  return diffDays < 7
+}
+
 const Projects: FC<ProjectsProps> = ({}) => {
   const { projects } = useLoaderData<typeof loader>()
 
@@ -48,21 +55,37 @@ const Projects: FC<ProjectsProps> = ({}) => {
 
   return (
     <div className='p-10 flex gap-5 flex-col'>
-      {projects.map((project) => {
-        return (
-          <div key={project.id} className='card bordered shadow-lg bg-base-100'>
-            <div className='card-body'>
-              <h2 className='card-title'>{project.name}</h2>
-              <p className='card-subtitle '>{new Date(project.createdAt).toDateString()}</p>
-              <Link to={`/projects/${project.id}`}>
-                <button className='btn btn-primary'>Open project</button>
-              </Link>
+      <div>
+        {projects.map((project) => {
+          return (
+            <div key={project.id} className='card mw-96 bg-base-100 shadow-xl'>
+              <figure>
+                <div className='avatar placeholder flex grow h-32'>
+                  <div className='bg-neutral-focus grow text-neutral-content'>
+                    <div className='card-actions justify-end absolute top-3 left-3'>
+                      <div className='badge badge-outline'>Fashion</div>
+                      <div className='badge badge-outline'>Products</div>
+                    </div>
+                    <span className='text-3xl'>{project.name.charAt(0).toUpperCase() + project.name.slice(1)}</span>
+                  </div>
+                </div>
+              </figure>
+              <div className='card-body'>
+                <h2 className='card-title'>
+                  Shoes!
+                  <div className='badge badge-neutral'>{ifDateIsClose(new Date(project.createdAt)) ? 'New' : null}</div>
+                </h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <Link to={`/projects/${project.id}`}>
+                  <button className='btn btn-primary mt-5 w-full'>Open Project</button>
+                </Link>
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
       <Link to='/projects/create'>
-        <button className='btn btn-primary'>Create a new project</button>
+        <button className='btn btn-ghost btn-outline'>Create a new project</button>
       </Link>
     </div>
   )
