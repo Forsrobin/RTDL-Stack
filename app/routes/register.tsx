@@ -1,7 +1,7 @@
 import Input from '@app/components/Input'
 import { register } from '@app/utils/auth.server'
 import { db } from '@app/utils/db.server'
-import { badRequest, validationAction } from '@app/utils/utils'
+import { badRequest, validationAction } from '@app/utils/utils.server'
 import type { ActionFunction } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
 import * as Z from 'zod'
@@ -63,8 +63,11 @@ export const action: ActionFunction = async ({ request }) => {
 export default function RegisterRoute() {
   const actionData = useActionData<typeof action>()
   return (
-    <div className='hero max-w-full'>
-      <div className='hero-content gap-20 w-1/2'>
+    <div className='hero max-w-full items-start md:items-center flex'>
+      <div className='hero-content grow gap-10 mt-5 md:mt-0 md:gap-20 flex-col lg:flex-row-reverse'>
+        <div className='text-center block md:hidden w-full md:w-1/4 lg:text-lef'>
+          <h1 className='text-5xl font-bold'>Register!</h1>
+        </div>
         <div className='card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100'>
           <div className='card-body'>
             <Form method='post' action='/register'>

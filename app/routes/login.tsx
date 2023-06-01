@@ -1,7 +1,7 @@
 import Input from '@app/components/Input'
 import { login } from '@app/utils/auth.server'
 import { createUserSession, getUser } from '@app/utils/session.server'
-import { badRequest, validationAction } from '@app/utils/utils'
+import { badRequest, validationAction } from '@app/utils/utils.server'
 import type { ActionArgs, ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData } from '@remix-run/react'
@@ -50,11 +50,11 @@ export default function LoginRoute() {
   const actionData = useActionData<typeof action>()
 
   return (
-    <div className='hero max-w-full'>
-      <div className='hero-content gap-20 flex-col lg:flex-row-reverse'>
-        <div className='text-center w-1/4 lg:text-left'>
+    <div className='hero max-w-full items-start md:items-center flex '>
+      <div className='hero-content grow gap-10 mt-5 md:mt-0 md:gap-20 flex-col lg:flex-row-reverse'>
+        <div className='text-center w-full md:w-1/4 lg:text-lef'>
           <h1 className='text-5xl font-bold'>Login now!</h1>
-          <p className='py-6'>
+          <p className='py-6 hidden md:block'>
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a
             id nisi.
           </p>

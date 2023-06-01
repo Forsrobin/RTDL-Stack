@@ -1,6 +1,6 @@
 import Input from '@app/components/Input'
 import { createProject } from '@app/services/projects.server'
-import { badRequest, validationAction } from '@app/utils/utils'
+import { badRequest, validationAction } from '@app/utils/utils.server'
 import type { ActionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
