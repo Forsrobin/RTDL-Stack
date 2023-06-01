@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setDisplaySidebar, displaySideba
     <nav className='navbar bg-primary text-white shadow-md z-10 gap-5 fixed md:static'>
       <div className='flex-1 ml-3 gap-5'>
         {user && (
-          <button className='btn btn-square btn-ghost hidden md:block' onClick={() => setDisplaySidebar(!displaySidebar)}>
+          <button className='btn btn-square btn-ghost' onClick={() => setDisplaySidebar(!displaySidebar)}>
             <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' className='inline-block w-5 h-5 stroke-current'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16'></path>
             </svg>

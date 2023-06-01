@@ -9,6 +9,7 @@ import { Sidebar } from './components/Sidebar'
 import { userPrefs } from './cookies'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
+import Loading from './components/Loading'
 
 export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]
@@ -61,10 +62,12 @@ const Document = ({ children }: { children: React.ReactNode }) => {
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { outerWidth } = useWindowSize()
-  const [displaySidebar, setDisplaySidebar] = useState<boolean>(true)
+  const [displaySidebar, setDisplaySidebar] = useState<boolean | undefined>(undefined)
   const { user } = useLoaderData<typeof loader>()
 
   useEffect(() => {
+    console.log(outerWidth)
+
     if (!outerWidth) return
     if (outerWidth < 750) {
       setDisplaySidebar(false)
@@ -76,19 +79,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='w-full h-screen flex flex-col'>
       <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
-      <div className='flex flex-row grow'>
-        {user && displaySidebar && <Sidebar displaySidebar={displaySidebar} />}
-        <div className='grow flex bg-base-200'>{children}</div>
-      </div>
 
-      {user && (
-        <div className='fixed bottom-5 flex w-full md:hidden z-10'>
-          <button className='bg-base-100 mx-auto p-5 rounded-xl shadow-xl' onClick={() => setDisplaySidebar(!displaySidebar)}>
-            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' className='inline-block w-5 h-5 stroke-current'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16'></path>
-            </svg>
-          </button>
+      {displaySidebar != undefined ? (
+        <div className='flex flex-row grow'>
+          <div className='flex'>{user && <Sidebar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />}</div>
+          <div className='grow flex bg-base-200 py-20 md:py-0'>{children}</div>
         </div>
+      ) : (
+        <Loading />
       )}
     </div>
   )
