@@ -2,12 +2,13 @@ import type { ActionArgs, V2_MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
 
-import { useState } from 'react'
+import { Navbar } from '@app/components/Navbar'
+import useWindowSize from '@rooks/use-window-size'
+import { useEffect, useState } from 'react'
+import { Sidebar } from './components/Sidebar'
+import { userPrefs } from './cookies'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
-import { userPrefs } from './cookies'
-import { Sidebar } from './components/Sidebar'
-import { Navbar } from '@app/components/Navbar'
 
 export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]
@@ -59,15 +60,36 @@ const Document = ({ children }: { children: React.ReactNode }) => {
 }
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [displaySidebar, setDisplaySidebar] = useState(true)
+  const { outerWidth } = useWindowSize()
+  const [displaySidebar, setDisplaySidebar] = useState<boolean>(true)
   const { user } = useLoaderData<typeof loader>()
+
+  useEffect(() => {
+    if (!outerWidth) return
+    if (outerWidth < 750) {
+      setDisplaySidebar(false)
+    } else {
+      setDisplaySidebar(true)
+    }
+  }, [outerWidth])
+
   return (
     <div className='w-full h-screen flex flex-col'>
       <Navbar setDisplaySidebar={setDisplaySidebar} displaySidebar={displaySidebar} />
       <div className='flex flex-row grow'>
-        <div className='flex'>{user && <Sidebar displaySidebar={displaySidebar} />}</div>
+        {user && displaySidebar && <Sidebar displaySidebar={displaySidebar} />}
         <div className='grow flex bg-base-200'>{children}</div>
       </div>
+
+      {user && (
+        <div className='fixed bottom-5 flex w-full md:hidden z-10'>
+          <button className='bg-base-100 mx-auto p-5 rounded-xl shadow-xl' onClick={() => setDisplaySidebar(!displaySidebar)}>
+            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' className='inline-block w-5 h-5 stroke-current'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h16'></path>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   )
 }
