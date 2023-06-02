@@ -1,7 +1,9 @@
+import { globalContants } from '@app/utils/constants'
 import { getUser } from '@app/utils/session.server'
 import type { ActionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Link } from '@remix-run/react'
+import useWindowSize from '@rooks/use-window-size'
 import { AiOutlineHome, AiOutlineProject } from 'react-icons/ai'
 
 interface SidebarProps {
@@ -20,9 +22,11 @@ export const loader = async ({ request }: ActionArgs) => {
 
 export const Sidebar: React.FC<SidebarProps> = ({ displaySidebar, setDisplaySidebar }) => {
   const sidebarWidth = displaySidebar ? 'w-80 md:w-60' : 'w-0'
+  const { outerWidth } = useWindowSize()
 
   const closeDisplay = () => {
-    setDisplaySidebar(!displaySidebar)
+    if (!outerWidth) return
+    if (outerWidth < globalContants.md) setDisplaySidebar(!displaySidebar)
   }
 
   return (
@@ -36,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ displaySidebar, setDisplaySide
           </button>
           <h2>Menu</h2>
         </div>
-        <ul className='menu p-4 bg-base-100 text-base-content gap-2'>
+        <ul className='menu px-2 bg-base-100 text-base-content gap-2'>
           <li>
             <Link to={'/'} onClick={closeDisplay}>
               <AiOutlineHome className=' text-xl' />

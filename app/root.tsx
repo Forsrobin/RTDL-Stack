@@ -10,6 +10,7 @@ import { userPrefs } from './cookies'
 import styles from './styles/app.css'
 import { getUser } from './utils/session.server'
 import Loading from './components/Loading'
+import { globalContants } from './utils/constants'
 
 export const links = () => {
   return [{ rel: 'stylesheet', href: styles }]
@@ -66,10 +67,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useLoaderData<typeof loader>()
 
   useEffect(() => {
-    console.log(outerWidth)
-
     if (!outerWidth) return
-    if (outerWidth < 750) {
+    if (outerWidth < globalContants.md) {
       setDisplaySidebar(false)
     } else {
       setDisplaySidebar(true)
